@@ -1,16 +1,66 @@
-# React + Vite
+# Laurentino
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema web de gestión para una cafetería, desarrollado con React y Vite.
 
-Currently, two official plugins are available:
+## Estado actual
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+La primera etapa incluye:
 
-## React Compiler
+- Inicio de sesión con Supabase Auth.
+- Persistencia y renovación automática de la sesión.
+- Panel inicial para usuarios autenticados.
+- Cierre de sesión.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Los siguientes módulos previstos son la gestión de productos, mesas y comandas persistidas en Supabase.
 
-## Expanding the ESLint configuration
+## Tecnologías
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 19
+- Vite
+- Tailwind CSS
+- Supabase
+
+## Requisitos
+
+- Node.js
+- Una instancia de Supabase configurada con autenticación por correo y contraseña.
+
+## Configuración
+
+1. Instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+2. Crea un archivo `.env.local` en la raíz del proyecto:
+
+   ```env
+   VITE_SUPABASE_URL=tu_url_de_supabase
+   VITE_SUPABASE_ANON_KEY=tu_clave_publica_de_supabase
+   ```
+
+   No compartas este archivo ni publiques sus valores. `.env.local` debe permanecer fuera del control de versiones.
+
+## Comandos
+
+```bash
+npm run dev       # Inicia el servidor de desarrollo
+npm run build     # Genera la compilación de producción
+npm run preview   # Previsualiza la compilación
+npm run lint      # Ejecuta ESLint
+```
+
+## Estructura principal
+
+```text
+src/
+├── App.jsx             # Autenticación y panel inicial
+├── supabaseClient.js   # Cliente de Supabase
+├── index.css           # Estilos base y Tailwind
+└── main.jsx            # Punto de entrada de la aplicación
+```
+
+## Identidad visual
+
+El proyecto utiliza una interfaz en español con una paleta inspirada en cafeterías. El nombre visible de la aplicación es **Laurentino**.

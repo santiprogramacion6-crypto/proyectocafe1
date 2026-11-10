@@ -1,6 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://wvzuxqipnhwvvqpgthgt.supabase.co'
-const supabaseAnonKey = 'sb_publishable_xJwcii7d0-gAM_tS1Ov4rA_1O44Kiih'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. Configúralas en .env.local.',
+  )
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+})
