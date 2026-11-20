@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { supabase } from './supabaseClient'
+import { supabase, supabaseConfigError } from './supabaseClient'
+import ProductosPage from './pages/ProductosPage.jsx'
 
-function LoginForm() {
+function LoginForm({ configError }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -9,6 +10,7 @@ function LoginForm() {
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (!supabase) return
     setError('')
     setIsSubmitting(true)
 
@@ -38,6 +40,12 @@ function LoginForm() {
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
+          {configError && (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800" role="alert">
+              {configError}
+            </p>
+          )}
+
           <label className="block text-sm font-medium text-slate-700">
             Correo electrónico
             <input
@@ -71,7 +79,7 @@ function LoginForm() {
           <button
             className="w-full rounded-lg bg-amber-800 px-4 py-3 font-semibold text-white transition hover:bg-amber-900 disabled:cursor-not-allowed disabled:opacity-60"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || Boolean(configError)}
           >
             {isSubmitting ? 'Ingresando...' : 'Ingresar al sistema'}
           </button>
@@ -110,18 +118,7 @@ function Dashboard({ user }) {
       </header>
 
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
-            Primera etapa lista
-          </p>
-          <h2 className="mt-2 text-3xl font-bold text-amber-950">
-            Tu sesión permanecerá activa
-          </h2>
-          <p className="mt-3 max-w-2xl text-slate-600">
-            Supabase guarda la sesión y la renueva automáticamente. El siguiente módulo será
-            la gestión de productos, mesas y comandas persistidas en la base de datos.
-          </p>
-        </div>
+        <ProductosPage />
       </section>
     </main>
   )
@@ -129,10 +126,16 @@ function Dashboard({ user }) {
 
 function App() {
   const [session, setSession] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(Boolean(supabase))
 
   useEffect(() => {
     let isMounted = true
+
+    if (!supabase) {
+      return () => {
+        isMounted = false
+      }
+    }
 
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       if (isMounted) {
@@ -162,7 +165,7 @@ function App() {
     )
   }
 
-  return session ? <Dashboard user={session.user} /> : <LoginForm />
+  return session ? <Dashboard user={session.user} /> : <LoginForm configError={supabaseConfigError} />
 }
 
 export default App
