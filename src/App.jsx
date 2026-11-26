@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, supabaseConfigError } from './supabaseClient'
+import ComandasPage from './pages/comandasPages.jsx'
 import MesasPage from './pages/mesasPage.jsx'
 import ProductosPage from './pages/ProductosPage.jsx'
 
@@ -92,6 +93,7 @@ function LoginForm({ configError }) {
 
 function Dashboard({ user }) {
   const [paginaActiva, setPaginaActiva] = useState('mesas')
+  const [mesaSeleccionada, setMesaSeleccionada] = useState(null)
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -144,7 +146,16 @@ function Dashboard({ user }) {
       </nav>
 
       <section className="mx-auto max-w-7xl px-6 py-10">
-        {paginaActiva === 'mesas' ? <MesasPage /> : <ProductosPage />}
+        {paginaActiva === 'mesas' &&
+          (mesaSeleccionada ? (
+            <ComandasPage
+              mesa={mesaSeleccionada}
+              onVolver={() => setMesaSeleccionada(null)}
+            />
+          ) : (
+            <MesasPage onSeleccionarMesa={setMesaSeleccionada} />
+          ))}
+        {paginaActiva === 'productos' && <ProductosPage />}
       </section>
     </main>
   )
