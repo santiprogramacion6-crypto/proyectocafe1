@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, supabaseConfigError } from './supabaseClient'
+import MesasPage from './pages/mesasPage.jsx'
 import ProductosPage from './pages/ProductosPage.jsx'
 
 function LoginForm({ configError }) {
@@ -90,6 +91,8 @@ function LoginForm({ configError }) {
 }
 
 function Dashboard({ user }) {
+  const [paginaActiva, setPaginaActiva] = useState('mesas')
+
   async function handleSignOut() {
     await supabase.auth.signOut()
   }
@@ -117,8 +120,31 @@ function Dashboard({ user }) {
         </div>
       </header>
 
+      <nav className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-7xl gap-2 px-6">
+          {[
+            { id: 'mesas', label: 'Mesas' },
+            { id: 'productos', label: 'Productos' },
+          ].map((pagina) => (
+            <button
+              key={pagina.id}
+              className={`border-b-2 px-4 py-3 text-sm font-medium transition ${
+                paginaActiva === pagina.id
+                  ? 'border-amber-800 text-amber-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-800'
+              }`}
+              type="button"
+              onClick={() => setPaginaActiva(pagina.id)}
+              aria-current={paginaActiva === pagina.id ? 'page' : undefined}
+            >
+              {pagina.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <ProductosPage />
+        {paginaActiva === 'mesas' ? <MesasPage /> : <ProductosPage />}
       </section>
     </main>
   )
